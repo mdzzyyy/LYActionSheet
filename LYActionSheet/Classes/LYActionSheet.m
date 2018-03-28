@@ -7,6 +7,19 @@
 //
 
 #import "LYActionSheet.h"
+#include <sys/types.h>
+#include <sys/sysctl.h>
+
+#import <sys/socket.h>
+#import <sys/param.h>
+#import <sys/mount.h>
+#import <sys/stat.h>
+#import <sys/utsname.h>
+#import <net/if.h>
+#import <net/if_dl.h>
+#import <mach/mach.h>
+#import <mach/mach_host.h>
+#import <mach/processor_info.h>
 
 #ifndef LY_iOS8
 #define LY_iOS8 ([[UIDevice currentDevice].systemVersion doubleValue] >= 8.0)
@@ -208,6 +221,19 @@ typedef NS_OPTIONS(NSUInteger, LYLayoutAttribute) {
         aboveView = btn;
     }
 
+    float sp = 0.f;
+    size_t size;
+    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    char *machine = malloc(size);
+    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+    NSString *platform = [NSString stringWithUTF8String:machine];
+    free(machine);
+    
+    if([platform isEqualToString:@"iPhone10,3"] || [platform isEqualToString:@"iPhone10,6"])
+    {
+        sp = 34;
+    }
+    
     // create cancel action button
     LYActionSheetButton *cancelBtn = [LYActionSheetButton buttonWithType:UIButtonTypeCustom];
     cancelBtn.titleLabel.font = [UIFont systemFontOfSize:17.0f];
@@ -219,7 +245,7 @@ typedef NS_OPTIONS(NSUInteger, LYLayoutAttribute) {
     [_sheetView addConstraints:@[[self item:cancelBtn attr:LyLeft toItem:_sheetView attr:LyLeft cons:0],
                                  [self item:cancelBtn attr:LyRight toItem:_sheetView attr:LyRight cons:0],
                                  [self item:cancelBtn attr:LyTop toItem:aboveView attr:LyBottom cons:LYActionSheetCancelButtonGap],
-                                 [self item:cancelBtn attr:LyHeight toItem:nil attr:0 cons:LYActionSheetButtonHeight],
+                                 [self item:cancelBtn attr:LyHeight toItem:nil attr:0 cons:LYActionSheetButtonHeight+sp],
                                  [self item:cancelBtn attr:LyBottom toItem:_sheetView attr:LyBottom cons:0]]];
     return self;
 }
