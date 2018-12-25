@@ -222,17 +222,20 @@ typedef NS_OPTIONS(NSUInteger, LYLayoutAttribute) {
     }
 
     float sp = 0.f;
-    size_t size;
-    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
-    char *machine = malloc(size);
-    sysctlbyname("hw.machine", machine, &size, NULL, 0);
-    NSString *platform = [NSString stringWithUTF8String:machine];
-    free(machine);
-    
-    if([platform isEqualToString:@"iPhone10,3"] || [platform isEqualToString:@"iPhone10,6"])
+//    size_t size;
+//    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+//    char *machine = malloc(size);
+//    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+//    NSString *platform = [NSString stringWithUTF8String:machine];
+//    free(machine);
+    if ([UIApplication sharedApplication].statusBarFrame.size.height == 44.0)
     {
         sp = 34;
     }
+//    if([platform isEqualToString:@"iPhone10,3"] || [platform isEqualToString:@"iPhone10,6"]||[platform isEqualToString:@"iPhone11,2"]||[platform isEqualToString:@"iPhone11,4"]||[platform isEqualToString:@"iPhone11,6"]||[platform isEqualToString:@"iPhone11,8"])
+//    {
+//        sp = 34;
+//    }
     
     // create cancel action button
     LYActionSheetButton *cancelBtn = [LYActionSheetButton buttonWithType:UIButtonTypeCustom];
